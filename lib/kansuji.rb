@@ -1,49 +1,37 @@
-$kanji = { "1" => "一", "2" => "二", "3" => "三", "4" => "四", "5" => "五", "6" => "六", "7" => "七", 
-    "8" => "八", "9" => "九", "10" => "十", "100" => "百", "1000" => "千", "10000" => "万", "100000000" => "億",
-    "300" => "三百", "600" => "六百", "800" => "八百", "3000" => "三千", "8000" => "八千" }
+# frozen_string_literal: true
 
-def kanji_number(string)
-    $kanji.each do |num, name|
-    a = num.to_i
-    return 0 if string.to_s == '零' || string.to_s == ''
-    return a if string.to_s == name && a < 10
-    if (string.include? name)
-    return a + kanji_number(string.sub!(name, '')) if string.index(name) == 0
-    return kanji_number(string.split(name)[0]) * a + kanji_number(string.split(name)[1])
-    end
-    end
+KANJI = { '恒河沙': 10**52, '極': 10**48, '載': 10**44, '正': 10**40, '澗': 10**36,
+          '溝': 10**32, '穣': 10**28, '𥝱': 10**24, '垓': 10**20, '京': 10**16,
+          '兆': 10**12, '億': 10**8, '万': 10_000, '千': 1000, '百': 100, '十': 10,
+          '九': 9, '八': 8, '七': 7, '六': 6, '五': 5, '四': 4, '三': 3, '二': 2,
+          '一': 1 }.freeze
+
+def number_kansuji(number)
+  KANJI.each do |name, num|
+    kanji = name.to_s
+    return '零' if number.zero?
+    return kanji if number.to_s.length == 1 && (number / num).positive?
+    next unless (number / num).positive?
+    return kanji if (number % num).zero? && number <= 1000 && number / num == 1
+    return number_kansuji(number / num) + kanji if (number % num).zero?
+
+    return number_kansuji(number - number % num) + number_kansuji(number % num)
+  end
 end
 
-def number_kanji(int)
-    str = ''
-    $kanji.each do |num, name|
-    a = num.to_i
-    if int <= 10
-    return "零" if int == 0
-    return str + name if int == a
-    elsif int < 100 && (int / a).positive?
-    next if a < 10
-    return str + number_kanji(int / a) + name if int % a == 0
-    return str + number_kanji(int - int % a) + number_kanji(int % a)
-    elsif int < 1000 && int / a > 0
-    next if a < 100
-    return str + number_kanji(int / a) + name if int % a == 0
-    return str + number_kanji(int - int % a) + number_kanji(int % a)
-    elsif int < 10000 && int / a > 0
-    next if a < 1000
-    return str + number_kanji(int / a) + name if int % a == 0
-    return str + number_kanji(int - int % a) + number_kanji(int % a)
-    elsif int < 100000000 && int / a > 0
-    next if a < 10000
-    return str + number_kanji(int / a) + name if int % a == 0
-    return str + number_kanji(int - int % a) + number_kanji(int % a)
-    elsif int < 1000000000000 && int / a > 0
-    next if a < 100000000
-    return str + number_kanji(int / a) + name if int % a == 0
-    return str + number_kanji(int - int % a) + number_kanji(int % a)
+def kanji_number(str)
+  KANJI.each do |name, num|
+    return 0 if str.to_s == '' || str.to_s == '零'
+    return num if str == name.to_s && num < 10
+    next unless str.include? name.to_s
+    if str.index(name.to_s).zero?
+      return num + kanji_number(str.sub!(name.to_s, ''))
     end
-    end
+
+    kanji = str.split(name.to_s)
+    return kanji_number(kanji[0]) * num + kanji_number(kanji[1])
+  end
 end
 
-puts number_kanji(15)
-puts kanji_number("百")
+puts kanji_number('一万')
+puts number_kansuji(43)
