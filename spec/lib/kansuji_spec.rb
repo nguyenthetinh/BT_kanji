@@ -7,7 +7,7 @@ describe "number_kanji" do
   end
 
   context "when 1000" do
-    it { number_kanji(1000).should == "一千" }
+    it { number_kanji(1000).should == "千" }
   end
 
   context "when 9999" do
@@ -23,7 +23,7 @@ describe "number_kanji" do
   end
 
   context "when 11111111" do
-    it { number_kanji(11111111).should == "一千一百十一万一千一百十一" }
+    it { number_kanji(11111111).should == "千百十一万千百十一" }
   end
 
   context "when 99999999" do
@@ -39,7 +39,7 @@ describe "number_kanji" do
   end
 
   context "when 111111111111" do
-    it { number_kanji(111111111111).should == "一千一百十一億一千一百十一万一千一百十一" }
+    it { number_kanji(111111111111).should == "千百十一億千百十一万千百十一" }
   end
 
   context "when 999999999999" do
@@ -47,7 +47,7 @@ describe "number_kanji" do
   end
 
   context "when 100000000000" do
-    it { number_kanji(100000000000).should == "一千億" }
+    it { number_kanji(100000000000).should == "千億" }
   end
 
 end

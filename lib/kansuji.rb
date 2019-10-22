@@ -6,16 +6,16 @@ KANJI = { '恒河沙': 10**52, '極': 10**48, '載': 10**44, '正': 10**40, '澗
           '九': 9, '八': 8, '七': 7, '六': 6, '五': 5, '四': 4, '三': 3, '二': 2,
           '一': 1 }.freeze
 
-def number_kansuji(number)
+def number_kanji(number)
   KANJI.each do |name, num|
     kanji = name.to_s
     return '零' if number.zero?
     return kanji if number.to_s.length == 1 && (number / num).positive?
     next unless (number / num).positive?
     return kanji if (number % num).zero? && number <= 1000 && number / num == 1
-    return number_kansuji(number / num) + kanji if (number % num).zero?
+    return number_kanji(number / num) + kanji if (number % num).zero?
 
-    return number_kansuji(number - number % num) + number_kansuji(number % num)
+    return number_kanji(number - number % num) + number_kanji(number % num)
   end
 end
 
@@ -34,4 +34,4 @@ def kanji_number(str)
 end
 
 puts kanji_number('一万')
-puts number_kansuji(43)
+puts number_kanji(100000000000)
